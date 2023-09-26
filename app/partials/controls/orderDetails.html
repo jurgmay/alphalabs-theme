@@ -13,28 +13,22 @@
             <div class="uk-grid-small" uk-grid>
                 <div class="uk-width-1-3">
             		<label class="uk-form-label required">{{'Cost Center' | r | xlat}}</label>
-            		<input class="uk-input uk-form-width-small uk-margin-small-bottom uk-text-emphasis" value="{{user.CostCenters[0].Description === 'Cost Centre'?user.CostCenters[0].Name:user.CostCenters[1].Name}}" disabled />
+            		<input class="uk-input uk-form-width-small uk-margin-small-bottom uk-text-emphasis" value="{{currentOrder.CostCenter}}" disabled />
                 </div>
                 <div class="uk-width-1-3">
                 	<label class="uk-form-label required">{{'Purchase Order'}}</label>
-                	<input class="uk-input uk-form-width-small uk-margin-small-bottom uk-text-emphasis" value="{{user.CostCenters[1].Description === 'Purchase Order'?user.CostCenters[1].Name:user.CostCenters[0].Name}}" disabled />
+                	<input class="uk-input uk-form-width-small uk-margin-small-bottom uk-text-emphasis" value="{{currentOrder.OrderFields[0].Value}}" disabled />
                 </div>
             </div>
 		</fieldset>
-
-		<div ng-show="currentOrder.OrderFields">
-			<div ng-repeat="field in currentOrder.OrderFields">
-				<customtextfield customfield="field" ng-if="field.ControlType == 'Text'" ng-required="field.IsRequired" />
-				<customselectionfield customfield="field" ng-if="field.ControlType == 'Selection'" ng-required="field.IsRequired" />
-			</div>
-		</div>
-
-		<div class="uk-margin-small" ng-if="user.Permissions.contains('Comments')">
-			<label class="uk-form-label">{{'Comments' | r | xlat}}</label>
-			<div class="uk-form-controls">
-				<textarea class="uk-textarea" rows="5" ng-model="currentOrder.Comments" ng-attr-placeholder="You can enter any comments regarding your order here..." />
-			</div>
-		</div>
-
+		
 	</form>
+	
+	<div class="uk-margin-small" ng-if="user.Permissions.contains('Comments')">
+		<label class="uk-form-label">{{'Comments' | r | xlat}}</label>
+		<div class="uk-form-controls">
+			<textarea class="uk-textarea" rows="5" ng-model="currentOrder.Comments" ng-attr-placeholder="You can enter any comments regarding your order here..." />
+		</div>
+	</div>
+		
 </div>
