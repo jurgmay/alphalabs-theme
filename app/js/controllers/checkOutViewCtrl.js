@@ -28,10 +28,13 @@ four51.app.controller('CheckOutViewCtrl', [
 		$scope.hasOrderConfig = OrderConfig.hasConfig($scope.currentOrder, $scope.user);
 		$scope.checkOutSection = $scope.hasOrderConfig ? 'order' : 'shipping';
 
-		$scope.currentOrder.CostCenter =
-			$scope.user.CostCenters[0].Description === 'Cost Centre' ? $scope.user.CostCenters[0].Name : $scope.user.CostCenters[1].Name;
-		$scope.currentOrder.OrderFields[0].Value =
-			$scope.user.CostCenters[0].Description === 'Purchase Order' ? $scope.user.CostCenters[0].Name : $scope.user.CostCenters[1].Name;
+		if ($scope.user.CostCenters[0].Description === 'Cost Centre') {
+			$scope.currentOrder.CostCenter = $scope.user.CostCenters[0].Name;
+			$scope.currentOrder.OrderFields[0].Value = $scope.user.CostCenters[1].Name;
+		} else {
+			$scope.currentOrder.CostCenter = $scope.user.CostCenters[1].Name;
+			$scope.currentOrder.OrderFields[0].Value = $scope.user.CostCenters[0].Name;
+		}
 
 		function submitOrder() {
 			$scope.displayLoadingIndicator = true;
