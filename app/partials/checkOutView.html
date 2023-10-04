@@ -1,10 +1,17 @@
 <!-- *** checkOutView *** -->
-
+ 
 <!-- main-container start -->
 <!-- ==================== -->
 <section uk-height-viewport="expand: true" class="uk-section uk-background-muted">
 
-	<div class="uk-container">
+    <div class="uk-container" ng-show="currentOrder.CostCenter.length === 0 || currentOrder.OrderFields.length === 0 || currentOrder.CostCenter.Value === '' || currentOrder.OrderFields[0].Value === ''">
+        <div class="uk-width-1-1">
+            <p class="uk-h3 uk-text-danger">Configuration error</p>
+            <span class="uk-h4 uk-text-danger">- Check the cost centre and purchase order permissions</span>
+        </div>
+    </div>
+
+	<div class="uk-container" ng-hide="currentOrder.CostCenter.length === 0 || currentOrder.OrderFields.length === 0 || currentOrder.CostCenter.Value === '' || currentOrder.OrderFields[0].Value === ''">
 
 		<!-- page-title start -->
 		<!-- ================ -->

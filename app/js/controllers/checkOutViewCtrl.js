@@ -14,7 +14,7 @@ four51.app.controller('CheckOutViewCtrl', [
 	function ($scope, $routeParams, $location, $filter, $rootScope, $451, User, Order, OrderConfig, FavoriteOrder, AddressList, GoogleAnalytics) {
 		$scope.errorSection = 'open';
 		console.log('checkoutViewCtrl.js');
-		$scope.isEditforApproval = $routeParams.id != null && $scope.user.Permissions.contains('EditApprovalOrder');
+		$scope.isEditforApproval = $routeParams.id !== null && $scope.user.Permissions.contains('EditApprovalOrder');
 		if ($scope.isEditforApproval) {
 			Order.get($routeParams.id, function (order) {
 				$scope.currentOrder = order;
@@ -28,12 +28,23 @@ four51.app.controller('CheckOutViewCtrl', [
 		$scope.hasOrderConfig = OrderConfig.hasConfig($scope.currentOrder, $scope.user);
 		$scope.checkOutSection = $scope.hasOrderConfig ? 'order' : 'shipping';
 
-		if ($scope.user.CostCenters[0].Description === 'Cost Centre') {
-			$scope.currentOrder.CostCenter = $scope.user.CostCenters[0].Name;
-			$scope.currentOrder.OrderFields[0].Value = $scope.user.CostCenters[1].Name;
-		} else {
-			$scope.currentOrder.CostCenter = $scope.user.CostCenters[1].Name;
-			$scope.currentOrder.OrderFields[0].Value = $scope.user.CostCenters[0].Name;
+		// Check that the Purchase Order custom order field exists
+		if (typeof $scope.currentOrder.OrderFields[0] !== 'undefined') {
+			// Make sure that the cost centers include entries for 'Cost Centre' and 'Purchase Order'
+			if (
+				$scope.user.CostCenters.some((costCentre) => costCentre.Description === 'Cost Centre') &&
+				$scope.user.CostCenters.some((costCentre) => costCentre.Description === 'Purchase Order')
+			) {
+				//---
+				if ($scope.user.CostCenters[0].Description === 'Cost Centre') {
+					$scope.currentOrder.CostCenter = $scope.user.CostCenters[0].Name;
+					$scope.currentOrder.OrderFields[0].Value = $scope.user.CostCenters[1].Name;
+				} else {
+					$scope.currentOrder.CostCenter = $scope.user.CostCenters[1].Name;
+					$scope.currentOrder.OrderFields[0].Value = $scope.user.CostCenters[0].Name;
+				}
+			}
+			// No Purchase Order field, no Cost
 		}
 
 		function submitOrder() {
@@ -96,7 +107,7 @@ four51.app.controller('CheckOutViewCtrl', [
 		}
 
 		$scope.continueShopping = function () {
-			if (confirm('Do you want to save changes to your order before continuing?') == true)
+			if (confirm('Do you want to save changes to your order before continuing?') === true)
 				saveChanges(function () {
 					$location.path('catalog');
 				});
@@ -104,7 +115,7 @@ four51.app.controller('CheckOutViewCtrl', [
 		};
 
 		$scope.cancelOrder = function () {
-			if (confirm('Are you sure you wish to cancel your order?') == true) {
+			if (confirm('Are you sure you wish to cancel your order?') === true) {
 				$scope.displayLoadingIndicator = true;
 				Order.delete(
 					$scope.currentOrder,
